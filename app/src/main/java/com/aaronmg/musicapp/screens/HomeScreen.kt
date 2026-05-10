@@ -1,10 +1,18 @@
 package com.aaronmg.musicapp.screens
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -14,29 +22,39 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.aaronmg.musicapp.models.Album
 import com.aaronmg.musicapp.services.AlbumsService
+import com.aaronmg.musicapp.ui.theme.MusicAppTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+val PurpleHeader = Color(0xFF7B5EA7)
+val PurpleLight = Color(0xFFEDE7F6)
+val DarkPlayer = Color(0xFF1A0A2E)
 @Composable
 fun HomeScreen(
-    innerPadding: PaddingValues = PaddingValues(10.dp),
     navController: NavController = rememberNavController()
 ){
     val BASE_URL = "https://musicapi.pjasoft.com"
     var albums by remember {
-        mutableStateOf(listOf<Album>())
+        mutableStateOf(listOf(
+            Album(id = "1", title = "The Dark Side of the Moon", artist = "Pink Floyd", description = "Album conceptual", image = ""),
+            Album(id = "2", title = "Abbey Road", artist = "The Beatles", description = "Undécimo álbum", image = "")
+        ))
     }
-
     var isLoading by remember {
-        mutableStateOf(true)
+        mutableStateOf(false)
     }
+    var isPlaying by remember { mutableStateOf(false) }
     LaunchedEffect(key1 = true) {
         try {
             val retrofitBuilder = Retrofit.Builder()
@@ -65,8 +83,48 @@ fun HomeScreen(
         }
     }
     else{
-        Column(
+        Box(modifier = Modifier.fillMaxSize()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(220.dp)
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(PurpleHeader, PurpleLight)
+                        )
+                    )
+            )
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(bottom = 90.dp)
+            ) {
+                item {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .padding(top = 48.dp, bottom = 24.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp)
+                                .padding(top = 48.dp, bottom = 24.dp)
+                        ) { }
+                    }
+                }
+            }
+        }
+    }
+}
 
-        ) { }
+@Preview(
+    showSystemUi = true,
+    showBackground = true
+)
+@Composable
+fun ProductsScreenPreview(){
+    MusicAppTheme() {
+        HomeScreen()
     }
 }
