@@ -98,10 +98,10 @@ fun HomeScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(220.dp)
+                    .height(700.dp)
                     .background(
                         Brush.verticalGradient(
-                            colors = listOf(PurpleHeader, PurpleLight)
+                            colors = listOf(PurpleHeader, PurpleLight, PurpleLight.copy(alpha = 0.1f))
                         )
                     )
             )
@@ -149,6 +149,7 @@ fun HomeScreen(
                                 fontSize = 14.sp
                             )
                             Text(
+                                modifier = Modifier.padding(bottom = 15.dp),
                                 text = "Aarón Martínez",
                                 color = Color.White,
                                 fontSize = 28.sp,
