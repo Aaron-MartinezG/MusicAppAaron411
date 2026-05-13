@@ -13,12 +13,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -174,13 +179,13 @@ fun HomeScreen(
                     ) {
                         Text(
                             text = "Albums",
-                            fontSize = 20.sp,
+                            fontSize = 22.sp,
                             fontWeight = FontWeight.Bold
                         )
                         Text(
                             text = "See more",
                             color = PurpleHeader,
-                            fontSize = 14.sp
+                            fontSize = 16.sp
                         )
                     }
                     Spacer(modifier = Modifier.height(12.dp))
@@ -202,14 +207,34 @@ fun HomeScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                    ) { }
+                            .padding(horizontal = 16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Recently Played",
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = "See more",
+                            color = PurpleHeader,
+                            fontSize = 16.sp
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
+                items(albums) { album ->
+                    RecentlyPlayedItem(album = album, onClick = {
+                        navController.navigate("albums/${album.id}")
+                    })
                 }
             }
         }
     }
 }
 
+// cartas pal carrusel
 @Composable
 fun AlbumCard(album: Album, onClick: () -> Unit) {
     Box(
@@ -226,7 +251,7 @@ fun AlbumCard(album: Album, onClick: () -> Unit) {
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
         )
-        // Overlay oscuro abajo
+        // overlay oscuro abajo
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -257,13 +282,57 @@ fun AlbumCard(album: Album, onClick: () -> Unit) {
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        imageVector = Icons.Default.PlayArrow,
                         contentDescription = "Play",
+                        imageVector = Icons.Default.PlayArrow,
                         tint = PurpleHeader,
                         modifier = Modifier.size(20.dp)
                     )
                 }
             }
+        }
+    }
+}
+
+// tarjetitas de item recently played
+@Composable
+fun RecentlyPlayedItem(album: Album, onClick: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 6.dp)
+            .clickable { onClick() },
+        shape = RoundedCornerShape(12.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            AsyncImage(
+                model = album.image,
+                contentDescription = album.title,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(56.dp)
+                    .clip(RoundedCornerShape(8.dp))
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(album.title, fontWeight = FontWeight.SemiBold, fontSize = 15.sp)
+                Text(
+                    text = "${album.artist} • Popular Song",
+                    fontSize = 12.sp,
+                    color = Color.Gray
+                )
+            }
+            Icon(
+                imageVector = Icons.Default.MoreVert,
+                contentDescription = "Options",
+                tint = Color.Gray
+            )
         }
     }
 }
