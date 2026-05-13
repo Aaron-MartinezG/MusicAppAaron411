@@ -2,6 +2,7 @@ package com.aaronmg.musicapp.screens
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -34,12 +36,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil3.compose.AsyncImage
 import com.aaronmg.musicapp.models.Album
 import com.aaronmg.musicapp.services.AlbumsService
 import com.aaronmg.musicapp.ui.theme.MusicAppTheme
@@ -97,6 +101,7 @@ fun HomeScreen(
         Box(modifier = Modifier.fillMaxSize()) {
             Box(
                 modifier = Modifier
+                    .fillMaxWidth()
                     .fillMaxWidth()
                     .height(700.dp)
                     .background(
@@ -158,7 +163,106 @@ fun HomeScreen(
                         }
                     }
                 }
+                // albums con lazy row
+                item {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Albums",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = "See more",
+                            color = PurpleHeader,
+                            fontSize = 14.sp
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(12.dp))
 
+                    LazyRow(
+                        contentPadding = PaddingValues(horizontal = 16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        items(albums) { album ->
+                            AlbumCard(album = album, onClick = {
+                                navController.navigate("albums/${album.id}")
+                            })
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(24.dp))
+                }
+                //recently played
+                item {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                    ) { }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun AlbumCard(album: Album, onClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .width(200.dp)
+            .height(200.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .clickable { onClick() }
+    ) {
+        // Imagen del álbum
+        AsyncImage(
+            model = album.image,
+            contentDescription = album.title,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+        )
+        // Overlay oscuro abajo
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.7f))
+                    )
+                )
+        )
+        // Texto e ícono de play
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(12.dp)
+        ) {
+            Text(album.title, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(album.artist, color = Color.White.copy(alpha = 0.8f), fontSize = 12.sp)
+                Box(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clip(CircleShape)
+                        .background(Color.White),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.PlayArrow,
+                        contentDescription = "Play",
+                        tint = PurpleHeader,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
             }
         }
     }
