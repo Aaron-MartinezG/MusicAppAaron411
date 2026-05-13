@@ -64,15 +64,10 @@ val DarkPlayer = Color(0xFF1A0A2E)
 fun HomeScreen(
     navController: NavController = rememberNavController()
 ){
-    val BASE_URL = "https://musicapi.pjasoft.com"
-    var albums by remember {
-        mutableStateOf(listOf(
-            Album(id = "1", title = "The Dark Side of the Moon", artist = "Pink Floyd", description = "Album conceptual", image = ""),
-            Album(id = "2", title = "Abbey Road", artist = "The Beatles", description = "Undécimo álbum", image = "")
-        ))
-    }
+    val BASE_URL = "https://musicapi.pjasoft.com/"
+    var albums by remember { mutableStateOf(listOf<Album>()) }
     var isLoading by remember {
-        mutableStateOf(false)
+        mutableStateOf(true)
     }
     var isPlaying by remember { mutableStateOf(false) }
     LaunchedEffect(key1 = true) {
@@ -230,6 +225,16 @@ fun HomeScreen(
                     })
                 }
             }
+
+            // Reproductor de abajo
+            if (albums.isNotEmpty()) {
+                MiniPlayer(
+                    album = albums[0],
+                    isPlaying = isPlaying,
+                    onPlayPause = { isPlaying = !isPlaying },
+                    modifier = Modifier.align(Alignment.BottomCenter)
+                )
+            }
         }
     }
 }
@@ -333,6 +338,59 @@ fun RecentlyPlayedItem(album: Album, onClick: () -> Unit) {
                 contentDescription = "Options",
                 tint = Color.Gray
             )
+        }
+    }
+}
+
+// Mini reproductor componente
+@Composable
+fun MiniPlayer(
+    album: Album,
+    isPlaying: Boolean,
+    onPlayPause: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(12.dp),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = DarkPlayer),
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            AsyncImage(
+                model = album.image,
+                contentDescription = album.title,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(RoundedCornerShape(8.dp))
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(album.title, color = Color.White, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+                Text(album.artist, color = Color.White.copy(alpha = 0.7f), fontSize = 12.sp)
+            }
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .background(Color.White)
+                    .clickable { onPlayPause() },
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.PlayArrow,
+                    contentDescription = if (isPlaying) "Pause" else "Play",
+                    tint = DarkPlayer
+                )
+            }
         }
     }
 }
