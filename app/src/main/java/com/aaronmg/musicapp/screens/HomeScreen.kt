@@ -239,7 +239,6 @@ fun HomeScreen(
     }
 }
 
-// cartas pal carrusel
 @Composable
 fun AlbumCard(album: Album, onClick: () -> Unit) {
     Box(
@@ -249,47 +248,56 @@ fun AlbumCard(album: Album, onClick: () -> Unit) {
             .clip(RoundedCornerShape(16.dp))
             .clickable { onClick() }
     ) {
-        // Imagen del álbum
+        // foto del album
         AsyncImage(
             model = album.image,
             contentDescription = album.title,
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
         )
-        // overlay oscuro abajo
+
+        // tarjetita de abajo
         Box(
             modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.7f))
-                    )
-                )
-        )
-        // Texto e ícono de play
-        Column(
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .padding(12.dp)
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .padding(8.dp)
+                .clip(RoundedCornerShape(14.dp))
+                .background(DarkPlayer.copy(alpha = 0.75f))
+                .padding(horizontal = 12.dp, vertical = 10.dp)
         ) {
-            Text(album.title, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 14.sp)
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(album.artist, color = Color.White.copy(alpha = 0.8f), fontSize = 12.sp)
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = album.title,
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp,
+                        maxLines = 1
+                    )
+                    Text(
+                        text = album.artist,
+                        color = Color.White.copy(alpha = 0.8f),
+                        fontSize = 12.sp,
+                        maxLines = 1
+                    )
+                }
+                Spacer(modifier = Modifier.width(8.dp))
                 Box(
                     modifier = Modifier
-                        .size(32.dp)
+                        .size(34.dp)
                         .clip(CircleShape)
                         .background(Color.White),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        contentDescription = "Play",
                         imageVector = Icons.Default.PlayArrow,
-                        tint = PurpleHeader,
+                        contentDescription = "Play",
+                        tint = DarkPlayer,
                         modifier = Modifier.size(20.dp)
                     )
                 }

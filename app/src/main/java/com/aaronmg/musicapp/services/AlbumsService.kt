@@ -9,5 +9,5 @@ interface AlbumsService {
     suspend fun getAllAlbums(): List<Album>
 
     @GET("api/albums/{id}")
-    suspend fun getProductById( @Path("id") id: String)
+    suspend fun getAlbumById( @Path("id") id: String): Album
 }
