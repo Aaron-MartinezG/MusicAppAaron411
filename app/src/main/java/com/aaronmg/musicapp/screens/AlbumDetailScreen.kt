@@ -17,6 +17,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -76,11 +77,13 @@ fun AlbumDetailScreen(
                 contentPadding = PaddingValues(bottom = 90.dp)
             ) {
 
-                // ── HEADER con imagen full width y scrim morado ──
+                // header con imagen full width y scrim morado
                 item {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .padding(12.dp)
+                            .clip(RoundedCornerShape(24.dp))
                             .height(320.dp)
                     ) {
                         // Imagen del álbum
